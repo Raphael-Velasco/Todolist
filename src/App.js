@@ -1,25 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react'
+import "./App.css"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+class ToDoList extends Component {
 
-export default App;
+  state = {
+    tarefa: "",
+    lista: []
+  }
+  handleChange = (e) => {
+    this.setState({
+      tarefa: e.target.value
+    })
+  }
+
+  handleKeyDown = (e) => {
+    if(e.key === 'Enter'){
+      this.add()
+    }
+  }
+  add = () => {
+    let {lista, tarefa} = this.state
+    if (tarefa.length !== 0 || null) {
+      this.setState({
+        lista: lista.concat({
+          tarefa: tarefa,
+          id: Date.now()
+        }),
+        tarefa: ""
+      })
+    }
+  }
+
+  remove = (id) => {
+    let {lista} = this.state
+    this.setState({
+      lista: lista.filter((item) => (
+        item.id !== id
+        ))
+    })
+  }
+
+  render() {
+    let {handleChange, add, remove, handleKeyDown} = this
+    let {tarefa, lista} = this.state
+    return (
+        <div className="container">
+        <div>
+          <h1>ToDo List</h1>
+            <input value = {tarefa} onKeyDown={handleKeyDown} onChange ={handleChange}/>  
+            <button onClick = {add}>Add</button>
+            {lista.map((item) => (
+              <ul>
+                <li> {item.tarefa} </li>
+                <button onClick = {() => remove(item.id)}> x </button>   
+              </ul>
+            ))
+            } 
+          </div>
+        </div>
+      )
+    }
+  }
+
+export default ToDoList;
